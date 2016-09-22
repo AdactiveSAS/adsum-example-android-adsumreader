@@ -1,0 +1,21 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
+
+    <item android:id="@+id/switch_camera"
+        android:title="@string/action_switch_2D"
+        app:showAsAction="withText|ifRoom" />
+
+    <item android:id="@+id/wayfinding"
+        android:title="@string/action_wayfinding"
+        android:icon="@drawable/ic_directions_run_white_48dp"
+        app:showAsAction="never" />
+
+    <item android:id="@+id/search"
+        android:title="@string/action_search"
+        android:icon="@drawable/ic_search_white_48dp"
+        app:showAsAction="never"/>
+
+</menu>
+
+<!-- IfRoom -> Always ? -->

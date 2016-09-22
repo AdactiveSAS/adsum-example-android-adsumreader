@@ -1,0 +1,45 @@
+<resources>
+    <string name="app_name">AdsumReader</string>
+
+    <string-array name="sections">
+        <item>Home</item>
+        <item>Map</item>
+    </string-array>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_switch_2D">2D</string>
+    <string name="action_switch_3D">3D</string>
+    <string name="action_switch_desc">Switching Camera Mode</string>
+    <string name="action_wayfinding">Find your way</string>
+    <string name="action_search">Search</string>
+
+    <string name="go">Go</string>
+    <string name="cancel">Cancel</string>
+    <string name="close">Close</string>
+
+    <string name="wayfinding_title">Find your way</string>
+    <string name="wayfinding_from">From</string>
+    <string name="wayfinding_to">To</string>
+
+    <string name="search_hint">Search a place</string>
+
+    <string name="highlight_color">#21B8B1</string>
+    <string name="inactive_color">#F9F6F8</string>
+
+    <string name="fake_column_name">storeName</string>
+    <string name="no_description">No description available</string>
+    <string name="search_error"> is not a store</string>
+
+    <string name="loading_map">Please wait while the map is loading...</string>
+
+    <string name="introduction">
+    AdSum is a software suite providing end-to-end 3D guidance and information services.
+    It is composed of AdSum Studio and AdSum Explorer. \n\n
+    AdSum Studio is a web based software that allows for the creation of 2D and 3D indoor map and the addition of content on and around this map.  The whole thing is then turned into an interactive wayfinding app called Adsum Explorer, ready to be displayed in a website, a mobile app and a kiosk.
+    </string>
+
+
+
+</resources>
