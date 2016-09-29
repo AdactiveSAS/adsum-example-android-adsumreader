@@ -34,6 +34,9 @@
             android:windowSoftInputMode="stateAlwaysHidden">
 
         </activity>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="fca2322d87f25dc776ebb49c7a59500ed394e029" />
     </application>
 
 </manifest>

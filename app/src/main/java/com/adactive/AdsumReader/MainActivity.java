@@ -16,10 +16,12 @@ import android.view.Menu;
 import android.widget.Toast;
 
 import com.adactive.nativeapi.MapView;
+import com.crashlytics.android.Crashlytics;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.quinny898.library.persistentsearch.SearchBox;
 
+import io.fabric.sdk.android.Fabric;
 import org.xmlpull.v1.XmlPullParser;
 
 import java.io.File;
@@ -38,6 +40,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         
         //Force local to english
         Locale locale2 = new Locale("en");
