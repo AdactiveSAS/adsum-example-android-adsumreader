@@ -34,6 +34,8 @@
                 android:layout_height="match_parent"
                 android:background="#FFFFFF">
             </FrameLayout>
+
+
         </LinearLayout>
 
         <com.quinny898.library.persistentsearch.SearchBox

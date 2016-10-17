@@ -16,6 +16,10 @@
         android:icon="@drawable/ic_search_white_48dp"
         app:showAsAction="never"/>
 
+    <item android:id="@+id/precision_GPS"
+        android:title="Gps Coordinates"
+        app:showAsAction="never"/>
+
 </menu>
 
 <!-- IfRoom -> Always ? -->

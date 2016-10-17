@@ -13,7 +13,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.adactive.nativeapi.AdActiveEventListener;
@@ -30,10 +32,14 @@ import com.quinny898.library.persistentsearch.SearchResult;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.zip.Inflater;
+
+import static android.provider.AlarmClock.EXTRA_MESSAGE;
+import static java.security.AccessController.getContext;
 
 //import com.adactive.nativeapi.DataObject.Store;
 
-public class MapFragment extends MainActivity.PlaceholderFragment {
+public class MapBaseFragment extends MainActivity.PlaceholderFragment {
 
     static private boolean isMapLoaded = false;
     static private MapView.CameraMode currentCameraMode = MapView.CameraMode.FULL;
@@ -50,6 +56,11 @@ public class MapFragment extends MainActivity.PlaceholderFragment {
     private View rootView;
     private MapView map;
     private LinearLayout mapContainer;
+
+    private ViewGroup container;
+
+    private RelativeLayout gMapcontainer;
+    private RelativeLayout mapContainerSmall;
 
     private FloatingActionsMenu setLevel;
     private FloatingActionButton setSiteView;
@@ -69,13 +80,13 @@ public class MapFragment extends MainActivity.PlaceholderFragment {
 
     private AdActiveEventListener adActiveEventListener;
 
-    public static MapFragment newInstance(MapView map) {
-        MapFragment fragment = new MapFragment();
+    public static MapBaseFragment newInstance(MapView map) {
+        MapBaseFragment fragment = new MapBaseFragment();
         fragment.setMap(map);
         return fragment;
     }
 
-    public MapFragment() {
+    public MapBaseFragment() {
     }
 
     public void setMap(MapView m) {
@@ -150,9 +161,21 @@ public class MapFragment extends MainActivity.PlaceholderFragment {
         setHasOptionsMenu(true);
     }
 
+    private void showGmap(){
+        Intent intent = new Intent(getActivity(), MainActivity.class);
+        intent.putExtra("methodName","myMethod");
+        startActivity(intent);
+        //MainActivity mainActivity=new MainActivity();
+        //mainActivity.launchDoubleMap();
+    }
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup acontainer, Bundle savedInstanceState) {
+        this.container=acontainer;
+
         rootView = inflater.inflate(R.layout.fragment_map, container, false);
+
+
 
         //TODO Comment when ORTHO will be fix
         currentCameraMode = MapView.CameraMode.FULL;
@@ -270,10 +293,16 @@ public class MapFragment extends MainActivity.PlaceholderFragment {
                 doOpenSearch();
                 return true;
             }
+            if(id==R.id.precision_GPS){
+                showGmap();
+                return true;
+            }
         }
 
         return super.onOptionsItemSelected(item);
     }
+
+
 
     @Override
     public void onDestroyView() {
