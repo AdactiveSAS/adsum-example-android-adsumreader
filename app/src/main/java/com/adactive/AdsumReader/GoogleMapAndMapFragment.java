@@ -155,7 +155,7 @@ public class GoogleMapAndMapFragment extends MainActivity.PlaceholderFragment im
 
         Bundle args = new Bundle();
         args.putString(StoreDescriptionDialog.ARG_STORE_NAME, "Notice");
-        args.putString(StoreDescriptionDialog.ARG_STORE_DESCRIPTION, "Click long on google Map to center Adsum Map on Position clicked");
+        args.putString(StoreDescriptionDialog.ARG_STORE_DESCRIPTION, "Click long on Google Map to center Adsum Map on Position clicked");
         StoreDescriptionDialog storeDialog = new StoreDescriptionDialog();
         storeDialog.setArguments(args);
         storeDialog.show(getFragmentManager(), "storeDescription");

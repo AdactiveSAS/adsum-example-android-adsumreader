@@ -1,4 +1,5 @@
 package com.adactive.AdsumReader;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -50,7 +51,7 @@ public class MapBaseFragment extends MainActivity.PlaceholderFragment {
     // Don't initialize location manager, retrieve it from system services.
     private LocationManager locationManager;
     private LocationListener locationListener;
-    private long minTime =  5; // Minimum time interval for update in seconds, i.e. 5 seconds.
+    private long minTime = 5; // Minimum time interval for update in seconds, i.e. 5 seconds.
     private long minDistance = 1; // Minimum distance change for update in meters, i.e. 10 meters.
 
     private View rootView;
@@ -76,7 +77,7 @@ public class MapBaseFragment extends MainActivity.PlaceholderFragment {
     private ArrayList<Integer> storesIdsList = new ArrayList<>();
 
     //private Map<String, Store> storesNamesMap = new HashMap<>();
-  //  private Map<Integer, Store> storesIdsMap = new HashMap<>();
+    //  private Map<Integer, Store> storesIdsMap = new HashMap<>();
 
     private AdActiveEventListener adActiveEventListener;
 
@@ -105,14 +106,15 @@ public class MapBaseFragment extends MainActivity.PlaceholderFragment {
 
             @Override
             public void OnFloorChangedHandler(int floorId) {
-                if(!floorButtonsMap.isEmpty()) {
+                if (!floorButtonsMap.isEmpty()) {
                     doFloorChanged(floorId);
                 }
             }
 
 
             @Override
-            public void OnFloorClickedHandler(int i) {}
+            public void OnFloorClickedHandler(int i) {
+            }
 
             @Override
             public void OnTextClickedHandler(int[] POIs, int place) {
@@ -120,11 +122,12 @@ public class MapBaseFragment extends MainActivity.PlaceholderFragment {
             }
 
             @Override
-            public void OnMapLoadedHandler() {}
+            public void OnMapLoadedHandler() {
+            }
 
             @Override
             public void OnAdActiveViewStartHandler(int stateId) {
-                if(stateId == CheckStartNotice.ADACTIVEVIEW_DID_START) {
+                if (stateId == CheckStartNotice.ADACTIVEVIEW_DID_START) {
                     doMapLoaded();
                 }
             }
@@ -161,9 +164,9 @@ public class MapBaseFragment extends MainActivity.PlaceholderFragment {
         setHasOptionsMenu(true);
     }
 
-    private void showGmap(){
+    private void showGmap() {
         Intent intent = new Intent(getActivity(), MainActivity.class);
-        intent.putExtra("methodName","myMethod");
+        intent.putExtra("methodName", "myMethod");
         startActivity(intent);
         //MainActivity mainActivity=new MainActivity();
         //mainActivity.launchDoubleMap();
@@ -171,10 +174,9 @@ public class MapBaseFragment extends MainActivity.PlaceholderFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup acontainer, Bundle savedInstanceState) {
-        this.container=acontainer;
+        this.container = acontainer;
 
         rootView = inflater.inflate(R.layout.fragment_map, container, false);
-
 
 
         //TODO Comment when ORTHO will be fix
@@ -185,15 +187,18 @@ public class MapBaseFragment extends MainActivity.PlaceholderFragment {
         setLevel = (FloatingActionsMenu) rootView.findViewById(R.id.set_level);
         deletePath = (FloatingActionButton) rootView.findViewById(R.id.delete_path);
 
-        if(!map.isMapDataAvailable()) {
+        if (!map.isMapDataAvailable()) {
             rootView.findViewById(R.id.map).setVisibility(View.GONE);
             rootView.findViewById(R.id.progress_container).setVisibility(View.VISIBLE);
             isMenuEnabled = false;
         }
 
+
+        if(map.getParent()!=null)
+            ((ViewGroup)map.getParent()).removeView(map);
         mapContainer.addView(map);
 
-        if(isMapLoaded) {
+        if (isMapLoaded) {
             doMapLoaded();
         }
 
@@ -209,7 +214,7 @@ public class MapBaseFragment extends MainActivity.PlaceholderFragment {
 
             @Override
             public void onProviderEnabled(String provider) {
-                Toast.makeText(getActivity(),"Provider enabled: " + provider, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Provider enabled: " + provider, Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -222,8 +227,8 @@ public class MapBaseFragment extends MainActivity.PlaceholderFragment {
             @Override
             public void onLocationChanged(Location location) {
                 // Do work with new location. Implementation of this method will be covered later.
-             //   mMap.setGPSCoordinatesAsStartPoint(location.getLatitude(), location.getLongitude(), mMap.getCurrentFloor());
-                if(location != null) {
+                //   mMap.setGPSCoordinatesAsStartPoint(location.getLatitude(), location.getLongitude(), mMap.getCurrentFloor());
+                if (location != null) {
                     //Toast.makeText(getActivity(), "latitude : " + location.getLatitude() + " longitude : " + location.getLongitude(), Toast.LENGTH_SHORT).show();
                 }
             }
@@ -237,14 +242,13 @@ public class MapBaseFragment extends MainActivity.PlaceholderFragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        if(!((MainActivity) getActivity()).isNavigationDrawerOpen()) {
+        if (!((MainActivity) getActivity()).isNavigationDrawerOpen()) {
             inflater.inflate(R.menu.map_menu, menu);
 
             // Set the switch title according to the current mode
-            if(currentCameraMode == MapView.CameraMode.FULL) {
+            if (currentCameraMode == MapView.CameraMode.FULL) {
                 menu.findItem(R.id.switch_camera).setTitle(getString(R.string.action_switch_2D));
-            }
-            else if (currentCameraMode == MapView.CameraMode.ORTHO) {
+            } else if (currentCameraMode == MapView.CameraMode.ORTHO) {
                 menu.findItem(R.id.switch_camera).setTitle(getString(R.string.action_switch_3D));
             }
         }
@@ -254,7 +258,7 @@ public class MapBaseFragment extends MainActivity.PlaceholderFragment {
 
     @Override
     public void onPause() {
-        if(map != null)
+        if (map != null)
             map.onPause();
         super.onPause();
 
@@ -264,7 +268,7 @@ public class MapBaseFragment extends MainActivity.PlaceholderFragment {
     @Override
     public void onResume() {
 
-        if(map != null)
+        if (map != null)
             map.onResume();
         super.onResume();
 
@@ -275,7 +279,7 @@ public class MapBaseFragment extends MainActivity.PlaceholderFragment {
         int id = item.getItemId();
 
 
-        if(isMenuEnabled) {
+        if (isMenuEnabled) {
             // Change the icon in the action bar and the camera mode
             if (id == R.id.switch_camera) {
                 doSwitchCamera(item);
@@ -293,7 +297,7 @@ public class MapBaseFragment extends MainActivity.PlaceholderFragment {
                 doOpenSearch();
                 return true;
             }
-            if(id==R.id.precision_GPS){
+            if (id == R.id.precision_GPS) {
                 showGmap();
                 return true;
             }
@@ -301,7 +305,6 @@ public class MapBaseFragment extends MainActivity.PlaceholderFragment {
 
         return super.onOptionsItemSelected(item);
     }
-
 
 
     @Override
@@ -320,7 +323,7 @@ public class MapBaseFragment extends MainActivity.PlaceholderFragment {
         }
         */
 
-        if(!isMenuEnabled) {
+        if (!isMenuEnabled) {
             search.toggleSearch();
         }
     }
@@ -333,26 +336,27 @@ public class MapBaseFragment extends MainActivity.PlaceholderFragment {
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
-/*
-    private void initializeArrays(Store[] storesArray) {
-        for(Store store : storesArray) {
-            if(store.getName() != null && map.getPOIPlaces(store.getId()).length != 0) {
-                storesNamesMap.put(store.getName(), store);
-                storesIdsMap.put(store.getId(), store);
-                storesNamesList.add(store.getName());
+
+    /*
+        private void initializeArrays(Store[] storesArray) {
+            for(Store store : storesArray) {
+                if(store.getName() != null && map.getPOIPlaces(store.getId()).length != 0) {
+                    storesNamesMap.put(store.getName(), store);
+                    storesIdsMap.put(store.getId(), store);
+                    storesNamesList.add(store.getName());
+                }
+            }
+
+            // Sort the store names et ids lists by aplhabetical order
+            Collections.sort(storesNamesList, String.CASE_INSENSITIVE_ORDER);
+            for(String storeName : storesNamesList) {
+              /  storesIdsList.add(storesNamesMap.get(storeName).getId());
             }
         }
-
-        // Sort the store names et ids lists by aplhabetical order
-        Collections.sort(storesNamesList, String.CASE_INSENSITIVE_ORDER);
-        for(String storeName : storesNamesList) {
-          /  storesIdsList.add(storesNamesMap.get(storeName).getId());
-        }
-    }
-*/
+    */
     private void doMapLoaded() {
 
-     //   initializeArrays(map.getALLStore());
+        //   initializeArrays(map.getALLStore());
         final boolean isInBuilding = map.getCurrentBuilding() != -1;
 
         // Configure the map
@@ -393,7 +397,7 @@ public class MapBaseFragment extends MainActivity.PlaceholderFragment {
             }
         });
 
-        if(isInBuilding) {
+        if (isInBuilding) {
             doBuildingClicked(map.getCurrentBuilding());
         }
 
@@ -424,10 +428,10 @@ public class MapBaseFragment extends MainActivity.PlaceholderFragment {
     private void doTextClicked(int POI) {
         Bundle args = new Bundle();
 
-       // String description = storesIdsMap.get(POI).getDescription() != null ? storesIdsMap.get(POI).getDescription() : getString(R.string.no_description);
+        // String description = storesIdsMap.get(POI).getDescription() != null ? storesIdsMap.get(POI).getDescription() : getString(R.string.no_description);
 
-      //  args.putString(StoreDescriptionDialog.ARG_STORE_NAME, storesIdsMap.get(POI).getName());
-       // args.putString(StoreDescriptionDialog.ARG_STORE_DESCRIPTION, description);
+        //  args.putString(StoreDescriptionDialog.ARG_STORE_NAME, storesIdsMap.get(POI).getName());
+        // args.putString(StoreDescriptionDialog.ARG_STORE_DESCRIPTION, description);
 
         StoreDescriptionDialog storeDialog = new StoreDescriptionDialog();
         storeDialog.setArguments(args);
@@ -518,11 +522,10 @@ public class MapBaseFragment extends MainActivity.PlaceholderFragment {
     }
 
     private void doSwitchCamera(MenuItem item) {
-        if(currentCameraMode == MapView.CameraMode.FULL) {
+        if (currentCameraMode == MapView.CameraMode.FULL) {
             currentCameraMode = MapView.CameraMode.ORTHO;
             item.setTitle(getString(R.string.action_switch_3D));
-        }
-        else if(currentCameraMode == MapView.CameraMode.ORTHO) {
+        } else if (currentCameraMode == MapView.CameraMode.ORTHO) {
             currentCameraMode = MapView.CameraMode.FULL;
             item.setTitle(getString(R.string.action_switch_2D));
         }
@@ -549,7 +552,7 @@ public class MapBaseFragment extends MainActivity.PlaceholderFragment {
         isMenuEnabled = false;
         search.revealFromMenuItem(R.id.search, getActivity());
 
-        for(String storeName : storesNamesList) {
+        for (String storeName : storesNamesList) {
             SearchResult option = new SearchResult(storeName, getResources().getDrawable(R.drawable.ic_store_black_48dp));
             search.addSearchable(option);
         }
@@ -608,9 +611,6 @@ public class MapBaseFragment extends MainActivity.PlaceholderFragment {
         }
     }
 //GPS functions
-
-
-
 
 
 }
