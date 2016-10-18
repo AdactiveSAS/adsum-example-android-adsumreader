@@ -25,6 +25,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,12 +42,10 @@ public class GoogleMapAndMapFragment extends MainActivity.PlaceholderFragment im
     private RelativeLayout mapContainerSmall;
     private TextView mTapTextView;
 
-
     private com.google.android.gms.maps.MapView mapView;
-    private GoogleMap googleMap;
     private Map<Integer, FloatingActionButton> floorButtonsMap = new HashMap<>();
     private FloatingActionButton preSelectedFloorButton;
-    private FloatingActionsMenu setLevel;
+    private FloatingActionsMenu setLevelSmall;
 
     public static GoogleMapAndMapFragment newInstance(MapView map) {
         GoogleMapAndMapFragment fragment = new GoogleMapAndMapFragment();
@@ -56,69 +55,6 @@ public class GoogleMapAndMapFragment extends MainActivity.PlaceholderFragment im
 
     private void setMap(MapView m) {
         map = m;
-
-        adActiveEventListener = new AdActiveEventListener() {
-            @Override
-            public void OnPOIClickedHandler(int[] POIs, int place) {
-            }
-
-            @Override
-            public void OnBuildingClickedHandler(int i) {
-            }
-
-            @Override
-            public void OnFloorChangedHandler(int floorId) {
-            }
-
-
-            @Override
-            public void OnFloorClickedHandler(int i) {
-            }
-
-            @Override
-            public void OnTextClickedHandler(int[] POIs, int place) {
-            }
-
-            @Override
-            public void OnMapLoadedHandler() {
-            }
-
-            @Override
-            public void OnAdActiveViewStartHandler(int stateId) {
-                if (stateId == CheckStartNotice.ADACTIVEVIEW_DID_START) {
-
-                }
-            }
-
-            @Override
-            public void OnCheckForUpdatesHandler(int i) {
-                if (i == CheckForUpdatesNotice.CHECKFORUPDATES_UPDATESFOUND || i == CheckForUpdatesNotice.CHECKFORUPDATES_UPDATESNOTFOUND) {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            rootView.findViewById(R.id.map_small).setVisibility(View.VISIBLE);
-                            rootView.findViewById(R.id.progress_container_small).setVisibility(View.GONE);
-
-                        }
-                    });
-
-                    map.start();
-                }
-            }
-
-            @Override
-            public void OnFloorIntersectedAtPositionHandler(int i, Coordinates3D coordinates3D) {
-
-            }
-        };
-
-        //map.addEventListener(adActiveEventListener);
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        //setHasOptionsMenu(true);
     }
 
     @Override
@@ -147,10 +83,8 @@ public class GoogleMapAndMapFragment extends MainActivity.PlaceholderFragment im
 
         mapContainerSmall.addView(map);
 
-        //search = ((MainActivity) getActivity()).getSearchBox();
-        //search.enableVoiceRecognition(this);
-        setLevel = (FloatingActionsMenu) rootView.findViewById(R.id.set_levelsmall);
-        doBuildingClicked(map.getCurrentBuilding());
+        setLevelSmall = (FloatingActionsMenu) rootView.findViewById(R.id.set_levelsmall);
+
 
 
         Bundle args = new Bundle();
@@ -160,9 +94,12 @@ public class GoogleMapAndMapFragment extends MainActivity.PlaceholderFragment im
         storeDialog.setArguments(args);
         storeDialog.show(getFragmentManager(), "storeDescription");
 
+        doBuildingClicked(map.getCurrentBuilding());
 
         return rootView;
     }
+
+    //GoogleMap callbacks:
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -173,8 +110,7 @@ public class GoogleMapAndMapFragment extends MainActivity.PlaceholderFragment im
                 .target(new LatLng(17.385044, 78.486671)).zoom(12).build();
         googleMap.animateCamera(CameraUpdateFactory
                 .newCameraPosition(cameraPosition));
-
-
+        getCoordinates();
     }
 
     @Override
@@ -216,6 +152,8 @@ public class GoogleMapAndMapFragment extends MainActivity.PlaceholderFragment im
         mTapTextView.setText("Lat=" + point.latitude + " Long=" + point.longitude);
     }
 
+    //end google map callbacks
+
     private void doBuildingClicked(int i) {
         final int[] floors = map.getBuildingFloors(i);
 
@@ -226,7 +164,7 @@ public class GoogleMapAndMapFragment extends MainActivity.PlaceholderFragment im
 
                 // Remove all the former floorButtons of the menu */
                 for (Integer floorId : floorButtonsMap.keySet()) {
-                    setLevel.removeButton(floorButtonsMap.get(floorId));
+                    setLevelSmall.removeButton(floorButtonsMap.get(floorId));
                 }
                 floorButtonsMap.clear();
 
@@ -236,7 +174,7 @@ public class GoogleMapAndMapFragment extends MainActivity.PlaceholderFragment im
                     floorButton = createFloorButton(i, floors[i]);
                     //floorButtons.add(floorButton);
                     floorButtonsMap.put(floors[i], floorButton);
-                    setLevel.addButton(floorButton);
+                    setLevelSmall.addButton(floorButton);
                 }
 
                 // Disable the current floor button
@@ -245,8 +183,8 @@ public class GoogleMapAndMapFragment extends MainActivity.PlaceholderFragment im
                     floorButton.setEnabled(false);
                 }
 
-                // Make the setLevel button visible
-                setLevel.setVisibility(View.VISIBLE);
+                // Make the setLevelSmall button visible
+                setLevelSmall.setVisibility(View.VISIBLE);
             }
         });
 
@@ -264,7 +202,7 @@ public class GoogleMapAndMapFragment extends MainActivity.PlaceholderFragment im
                 .fontSize(30)
                 .textColor(Color.BLACK)
                 .endConfig()
-                .buildRect(Integer.toString(level), Color.TRANSPARENT);
+                .buildRound(Integer.toString(level), Color.TRANSPARENT);
 
         floorButton.setIconDrawable(floor_icon);
 
@@ -292,6 +230,16 @@ public class GoogleMapAndMapFragment extends MainActivity.PlaceholderFragment im
                 preSelectedFloorButton.setEnabled(false);
             }
         });
+
+    }
+
+    private void getCoordinates(){
+        String path="/data/data/adactive.com.AdsumReader/files";
+
+        File database=new File("content.db");
+        Log.e("data",String.valueOf(database.exists()));
+
+
 
     }
 
