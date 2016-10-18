@@ -113,11 +113,22 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
     @Override
     public void onBackPressed() {
+        boolean test1 = false;
+        GoogleMapAndMapFragment test = (GoogleMapAndMapFragment) getSupportFragmentManager().findFragmentByTag("2");
+        if (test != null && test.isVisible()) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.container, PlaceholderFragment.newInstance(1, map)).commit();
+            test1 = true;
+        }
+
+
         SearchBox search = (SearchBox) findViewById(R.id.searchbox);
-        if (search.isShown()) {
-            search.toggleSearch();
-        } else {
-            super.onBackPressed();
+        if (!test1) {
+            if (search.isShown()) {
+                search.toggleSearch();
+            } else {
+                super.onBackPressed();
+            }
         }
     }
 
@@ -275,16 +286,16 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
     public void launchDoubleMap() {
 
-        if (!isFinishing()&& !isDestroyed()) {
+        if (!isFinishing()) {
             FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.container, PlaceholderFragment.newInstance(2, map)).commit();
+            fragmentManager.beginTransaction().replace(R.id.container, PlaceholderFragment.newInstance(2, map), "2").commit();
         }
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        if(intent.getStringExtra("methodName").equals("myMethod")){
+        if (intent.getStringExtra("methodName").equals("myMethod")) {
             launchDoubleMap();
         }
     }
