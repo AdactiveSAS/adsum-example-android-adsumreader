@@ -150,7 +150,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                 if (writeConfigFile(res.getContents())) {
                     this.map = new MapView(getApplicationContext());
 
-                    map.update();
+                    map.update(true);
 
                     onNavigationDrawerItemSelected(1);
                 } else {

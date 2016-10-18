@@ -14,15 +14,15 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.adactive.AdsumReader.Structure.PoiCollection;
 import com.adactive.nativeapi.AdActiveEventListener;
 import com.adactive.nativeapi.CheckForUpdatesNotice;
 import com.adactive.nativeapi.CheckStartNotice;
 import com.adactive.nativeapi.Coordinates3D;
+import com.adactive.nativeapi.DataObject.Poi;
 import com.adactive.nativeapi.MapView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.getbase.floatingactionbutton.FloatingActionButton;
@@ -32,21 +32,16 @@ import com.quinny898.library.persistentsearch.SearchResult;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.zip.Inflater;
-
-import static android.provider.AlarmClock.EXTRA_MESSAGE;
-import static java.security.AccessController.getContext;
 
 //import com.adactive.nativeapi.DataObject.Store;
 
 public class MapBaseFragment extends MainActivity.PlaceholderFragment {
+    private PoiCollection mPoiCollection;
 
     static private boolean isMapLoaded = false;
     static private MapView.CameraMode currentCameraMode = MapView.CameraMode.FULL;
-
-
-    //GPS
 
     // Don't initialize location manager, retrieve it from system services.
     private LocationManager locationManager;
@@ -60,9 +55,6 @@ public class MapBaseFragment extends MainActivity.PlaceholderFragment {
 
     private ViewGroup container;
 
-    private RelativeLayout gMapcontainer;
-    private RelativeLayout mapContainerSmall;
-
     private FloatingActionsMenu setLevel;
     private FloatingActionButton setSiteView;
     private FloatingActionButton deletePath;
@@ -75,9 +67,6 @@ public class MapBaseFragment extends MainActivity.PlaceholderFragment {
 
     private ArrayList<String> storesNamesList = new ArrayList<>();
     private ArrayList<Integer> storesIdsList = new ArrayList<>();
-
-    //private Map<String, Store> storesNamesMap = new HashMap<>();
-    //  private Map<Integer, Store> storesIdsMap = new HashMap<>();
 
     private AdActiveEventListener adActiveEventListener;
 
@@ -118,7 +107,7 @@ public class MapBaseFragment extends MainActivity.PlaceholderFragment {
 
             @Override
             public void OnTextClickedHandler(int[] POIs, int place) {
-                doTextClicked(POIs[0]);
+                //doTextClicked(POIs[0]);
             }
 
             @Override
@@ -168,8 +157,6 @@ public class MapBaseFragment extends MainActivity.PlaceholderFragment {
         Intent intent = new Intent(getActivity(), MainActivity.class);
         intent.putExtra("methodName", "myMethod");
         startActivity(intent);
-        //MainActivity mainActivity=new MainActivity();
-        //mainActivity.launchDoubleMap();
     }
 
     @Override
@@ -194,8 +181,8 @@ public class MapBaseFragment extends MainActivity.PlaceholderFragment {
         }
 
 
-        if(map.getParent()!=null)
-            ((ViewGroup)map.getParent()).removeView(map);
+        if (map.getParent() != null)
+            ((ViewGroup) map.getParent()).removeView(map);
         mapContainer.addView(map);
 
         if (isMapLoaded) {
@@ -337,26 +324,11 @@ public class MapBaseFragment extends MainActivity.PlaceholderFragment {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    /*
-        private void initializeArrays(Store[] storesArray) {
-            for(Store store : storesArray) {
-                if(store.getName() != null && map.getPOIPlaces(store.getId()).length != 0) {
-                    storesNamesMap.put(store.getName(), store);
-                    storesIdsMap.put(store.getId(), store);
-                    storesNamesList.add(store.getName());
-                }
-            }
 
-            // Sort the store names et ids lists by aplhabetical order
-            Collections.sort(storesNamesList, String.CASE_INSENSITIVE_ORDER);
-            for(String storeName : storesNamesList) {
-              /  storesIdsList.add(storesNamesMap.get(storeName).getId());
-            }
-        }
-    */
     private void doMapLoaded() {
+        mPoiCollection = new PoiCollection(map.getDataManager().getAllPois());
 
-        //   initializeArrays(map.getALLStore());
+        //initializeArrays(map.getALLStore());
         final boolean isInBuilding = map.getCurrentBuilding() != -1;
 
         // Configure the map
@@ -536,8 +508,8 @@ public class MapBaseFragment extends MainActivity.PlaceholderFragment {
     private void doWayfinding() {
         Bundle args = new Bundle();
 
-        args.putStringArrayList(WayfindingDialog.ARG_STORES_NAMES_LIST, storesNamesList);
-        args.putIntegerArrayList(WayfindingDialog.ARG_STORES_IDS_LIST, storesIdsList);
+        args.putStringArrayList(WayfindingDialog.ARG_STORES_NAMES_LIST, (ArrayList<String>) mPoiCollection.getWfNameList());
+        args.putIntegerArrayList(WayfindingDialog.ARG_STORES_IDS_LIST, (ArrayList<Integer>) mPoiCollection.getWfIdList());
 
         WayfindingDialog wayfindingDialog = new WayfindingDialog();
         wayfindingDialog.setArguments(args);
@@ -552,9 +524,15 @@ public class MapBaseFragment extends MainActivity.PlaceholderFragment {
         isMenuEnabled = false;
         search.revealFromMenuItem(R.id.search, getActivity());
 
-        for (String storeName : storesNamesList) {
-            SearchResult option = new SearchResult(storeName, getResources().getDrawable(R.drawable.ic_store_black_48dp));
-            search.addSearchable(option);
+        List<String> mPoiNamesSortedList = mPoiCollection.getWfNameList();
+
+        for (String n : mPoiNamesSortedList) {
+
+            if (map.getPOIPlaces(mPoiCollection.getByName(n).getId()).length != 0) {
+                SearchResult option = new SearchResult(n, getResources().getDrawable(R.drawable.ic_store_black_48dp));
+
+                search.addSearchable(option);
+            }
         }
 
         search.setSearchListener(new SearchBox.SearchListener() {
@@ -594,23 +572,18 @@ public class MapBaseFragment extends MainActivity.PlaceholderFragment {
     }
 
     private void doSearch(String searchTerm) {
-        if (storesNamesList.contains(searchTerm)) {
-
-            //TODO Comment when ORTHO will be fix
-            /*
-            int POI = storesNamesMap.get(searchTerm).getId();
-            map.unLightAll();
-            map.highLightPOI(POI, getString(R.string.highlight_color));
-            map.centerOnPOI(POI);
-            */
-
-
-            //map.centerOnPlace(placeId);
-        } else {
+        if (mPoiCollection.getByName(searchTerm) == null) {
             Toast.makeText(getActivity(), searchTerm + getString(R.string.search_error), Toast.LENGTH_SHORT).show();
+        } else {
+            int poiID = (mPoiCollection.getByName(searchTerm)).getId();
+            map.unLightAll();
+            map.highLightPOI(poiID, getString(R.string.highlight_color));
+            map.getPathObject().setPathMotion(false);
+            map.centerOnPOI(poiID, 600, 0.9f);
+            map.drawPathToPoi(poiID);
         }
+
     }
-//GPS functions
 
 
 }
