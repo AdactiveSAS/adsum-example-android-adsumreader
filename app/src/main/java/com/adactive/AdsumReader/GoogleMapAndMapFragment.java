@@ -1,5 +1,8 @@
 package com.adactive.AdsumReader;
 
+import android.database.Cursor;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,9 +13,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.adactive.nativeapi.AdActiveEventListener;
-import com.adactive.nativeapi.CheckForUpdatesNotice;
-import com.adactive.nativeapi.CheckStartNotice;
-import com.adactive.nativeapi.Coordinates3D;
 
 import com.adactive.nativeapi.MapView;
 import com.amulyakhare.textdrawable.TextDrawable;
@@ -24,6 +24,7 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.File;
 import java.util.HashMap;
@@ -86,10 +87,9 @@ public class GoogleMapAndMapFragment extends MainActivity.PlaceholderFragment im
         setLevelSmall = (FloatingActionsMenu) rootView.findViewById(R.id.set_levelsmall);
 
 
-
         Bundle args = new Bundle();
         args.putString(StoreDescriptionDialog.ARG_STORE_NAME, "Notice");
-        args.putString(StoreDescriptionDialog.ARG_STORE_DESCRIPTION, "Click long on Google Map to center Adsum Map on Position clicked");
+        args.putString(StoreDescriptionDialog.ARG_STORE_DESCRIPTION, "Click long on GoogleMap to center AdsumMap on Position clicked. If AdsumMap doesn't contain positions, Google Map will go to Notre Dame of Paris");
         StoreDescriptionDialog storeDialog = new StoreDescriptionDialog();
         storeDialog.setArguments(args);
         storeDialog.show(getFragmentManager(), "storeDescription");
@@ -106,11 +106,16 @@ public class GoogleMapAndMapFragment extends MainActivity.PlaceholderFragment im
         googleMap.setOnMapClickListener(this);
         googleMap.setOnMapLongClickListener(this);
 
-        CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(new LatLng(17.385044, 78.486671)).zoom(12).build();
-        googleMap.animateCamera(CameraUpdateFactory
-                .newCameraPosition(cameraPosition));
         getCoordinates();
+        mTapTextView = (TextView) getActivity().findViewById(R.id.gmapTV);
+        mTapTextView.setText("Lat=" + lati + " Long=" + longi);
+        map.setCurrentPosition(lati, longi, map.getCurrentFloor());
+        CameraPosition cameraPosition = new CameraPosition.Builder().target(new LatLng(lati, longi)).zoom(17).build();
+        googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        googleMap.addMarker(new MarkerOptions()
+                .position(new LatLng(lati,longi))
+                .flat(true));
+
     }
 
     @Override
@@ -139,8 +144,13 @@ public class GoogleMapAndMapFragment extends MainActivity.PlaceholderFragment im
 
     @Override
     public void onMapLongClick(LatLng latLng) {
+        GoogleMap googleMap = mapView.getMap();
         mTapTextView = (TextView) getActivity().findViewById(R.id.gmapTV);
         mTapTextView.setText("Lat=" + latLng.latitude + " Long=" + latLng.longitude);
+        googleMap.clear();
+        googleMap.addMarker(new MarkerOptions()
+                .position(latLng)
+                .flat(true));
         map.setCurrentPosition(latLng.latitude, latLng.longitude, map.getCurrentFloor());
         map.centerOnPlace(0);
     }
@@ -233,12 +243,27 @@ public class GoogleMapAndMapFragment extends MainActivity.PlaceholderFragment im
 
     }
 
-    private void getCoordinates(){
-        String path="/data/data/adactive.com.AdsumReader/files";
+    private double longi =2.349315;
+    private double lati = 48.853261;
 
-        File database=new File("content.db");
-        Log.e("data",String.valueOf(database.exists()));
+    private void getCoordinates() {
+        String path = "/data/data/com.adactive.mall/files/content.db";
+        File database = new File(path);
+        Log.e("data", String.valueOf(database.exists()));
 
+        try {
+
+            SQLiteDatabase db = SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.OPEN_READONLY);
+            Cursor cursor = db.query(("geolocalisation"), new String[]{"longitude", "latitude"}, null, null, null, null, null);
+            if (cursor.moveToFirst()) {
+                cursor.moveToNext();
+                longi = cursor.getDouble(cursor.getColumnIndex("longitude"));
+                lati = cursor.getDouble(cursor.getColumnIndex("latitude"));
+            }
+
+        } catch (SQLException sqlexception) {
+            Log.e("Sql esception", String.valueOf(sqlexception));
+        }
 
 
     }
