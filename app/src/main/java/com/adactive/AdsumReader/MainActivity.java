@@ -6,6 +6,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -16,6 +17,7 @@ import android.view.Menu;
 import android.widget.Toast;
 
 import com.adactive.nativeapi.MapView;
+import com.google.android.gms.maps.MapFragment;
 import com.crashlytics.android.Crashlytics;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -28,6 +30,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
+import java.lang.reflect.Field;
 import java.util.Locale;
 
 public class MainActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -36,12 +39,13 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     private CharSequence mTitle;
     private MapView map;
     private Toolbar toolbar;
+    private MapFragment mMapFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
-        
+
         //Force local to english
         Locale locale2 = new Locale("en");
         Locale.setDefault(locale2);
@@ -55,7 +59,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         map = new MapView(getApplicationContext());
         map.update();
 
-        if(map.isMapDataAvailable()) {
+        if (map.isMapDataAvailable()) {
             map.start();
         }
 
@@ -84,7 +88,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
     public void restoreActionBar() {
         ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null) {
+        if (actionBar != null) {
             //actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
             actionBar.setDisplayShowTitleEnabled(true);
             actionBar.setTitle(mTitle);
@@ -98,9 +102,8 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     }
 
     public void onSectionAttached(int number) {
-        mTitle = (getResources().getStringArray(R.array.sections))[number];
+        //mTitle = (getResources().getStringArray(R.array.sections))[number];
     }
-
 
 
     public boolean isNavigationDrawerOpen() {
@@ -113,12 +116,22 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
     @Override
     public void onBackPressed() {
-        SearchBox search = (SearchBox) findViewById(R.id.searchbox);
-        if(search.isShown()) {
-            search.toggleSearch();
+        boolean test1 = false;
+        GoogleMapAndMapFragment test = (GoogleMapAndMapFragment) getSupportFragmentManager().findFragmentByTag("2");
+        if (test != null && test.isVisible()) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.container, PlaceholderFragment.newInstance(1, map)).commit();
+            test1 = true;
         }
-        else {
-            super.onBackPressed();
+
+
+        SearchBox search = (SearchBox) findViewById(R.id.searchbox);
+        if (!test1) {
+            if (search.isShown()) {
+                search.toggleSearch();
+            } else {
+                super.onBackPressed();
+            }
         }
     }
 
@@ -126,9 +139,9 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         //Parsing xzing result
         IntentResult res = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
 
-        if( res != null ){
+        if (res != null) {
 
-            if(checkXml(res.getContents())) {
+            if (checkXml(res.getContents())) {
                 //Delete old map
                 if (map != null)
                     map.destroy();
@@ -140,16 +153,14 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                 if (writeConfigFile(res.getContents())) {
                     this.map = new MapView(getApplicationContext());
 
-                    map.update();
+                    map.update(true);
 
                     onNavigationDrawerItemSelected(1);
                 } else {
                     Toast.makeText(this, "Failed to write new config file",
                             Toast.LENGTH_LONG).show();
                 }
-            }
-            else
-            {
+            } else {
                 Toast.makeText(this, "The QRCode does not contain valid config data",
                         Toast.LENGTH_LONG).show();
             }
@@ -159,22 +170,21 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
         }
 
     }
-    private boolean checkXml(String content)
-    {
+
+    private boolean checkXml(String content) {
         boolean ret = false;
-        XmlPullParser parser =  Xml.newPullParser();
+        XmlPullParser parser = Xml.newPullParser();
         try {
             parser.setInput(new StringReader(content));
             parser.nextTag();
-            if(parser.getName().equals("Adsum"))
-            {
+            if (parser.getName().equals("Adsum")) {
                 String siteId = "";
                 String kioskId = "";
 
                 int currentEvent = parser.next();
                 while (currentEvent != XmlPullParser.END_DOCUMENT) {
 
-                    if(currentEvent == XmlPullParser.START_TAG) {
+                    if (currentEvent == XmlPullParser.START_TAG) {
                         String name = parser.getName();
                         // Starts by looking for the entry tag
                         if (name.equals("siteId")) {
@@ -188,32 +198,29 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                 siteId = (siteId == null) ? "" : siteId;
                 kioskId = (kioskId == null) ? "" : kioskId;
 
-                Toast.makeText(getApplicationContext(), "Loading site " + siteId + " (kioskId " + kioskId +")", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Loading site " + siteId + " (kioskId " + kioskId + ")", Toast.LENGTH_LONG).show();
 
                 ret = true;
             }
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             return false;
         }
 
         return ret;
     }
 
-    private void clearFiles()
-    {
+    private void clearFiles() {
         File dir = getFilesDir();
-        if (dir.isDirectory())
-        {
+        if (dir.isDirectory()) {
             String[] children = dir.list();
             for (String aChildren : children) {
-                if(!new File(dir, aChildren).delete())
-                    Log.d("SCAN","Failed to delete " + aChildren);
+                if (!new File(dir, aChildren).delete())
+                    Log.d("SCAN", "Failed to delete " + aChildren);
 
             }
         }
     }
+
     private boolean writeConfigFile(String content) {
         try {
             File path = getFilesDir();
@@ -222,12 +229,12 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
             outputStreamWriter.write(content.getBytes());
             outputStreamWriter.close();
             return true;
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             Log.e("Scanning", "File write failed: " + e.toString());
             return false;
         }
     }
+
     public static class PlaceholderFragment extends Fragment {
 
         private static final String ARG_SECTION_NUMBER = "section_number";
@@ -240,7 +247,10 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
                     fragment = DescriptionFragment.newInstance();
                     break;
                 case 1:
-                    fragment = MapFragment.newInstance(map);
+                    fragment = MapBaseFragment.newInstance(map);
+                    break;
+                case 2:
+                    fragment = GoogleMapAndMapFragment.newInstance(map);
                     break;
                 default:
                     fragment = DescriptionFragment.newInstance();
@@ -260,6 +270,42 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
             ((MainActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
         }
 
+        @Override
+        public void onDetach() {
+            super.onDetach();
+            try {
+                Field childFragmentManager = Fragment.class.getDeclaredField("mChildFragmentManager");
+                childFragmentManager.setAccessible(true);
+                childFragmentManager.set(this, null);
+
+            } catch (NoSuchFieldException e) {
+                throw new RuntimeException(e);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+    }
+
+    public void launchDoubleMap() {
+
+        if (!isFinishing()) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.container, PlaceholderFragment.newInstance(2, map), "2").commit();
+        }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if (intent != null) {
+            String s= intent.getStringExtra("methodName");
+            if (s!=null) {
+                if (s.equals("myMethod")){
+                    launchDoubleMap();
+                }
+            }
+        }
     }
 
 }
