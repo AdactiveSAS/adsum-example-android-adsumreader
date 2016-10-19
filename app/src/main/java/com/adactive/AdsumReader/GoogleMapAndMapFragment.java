@@ -5,12 +5,14 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.adactive.nativeapi.AdActiveEventListener;
 
@@ -103,12 +105,18 @@ public class GoogleMapAndMapFragment extends MainActivity.PlaceholderFragment im
         mTapTextView = (TextView) getActivity().findViewById(R.id.gmapTV);
         mTapTextView.setText("Lat=" + lati + " Long=" + longi);
         map.setCurrentPosition(lati, longi, map.getCurrentFloor());
-        CameraPosition cameraPosition = new CameraPosition.Builder().target(new LatLng(lati, longi)).zoom(18 ).build();
+        CameraPosition cameraPosition = new CameraPosition.Builder().target(new LatLng(lati, longi)).zoom(18).build();
         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         googleMap.addMarker(new MarkerOptions()
-                .position(new LatLng(lati,longi))
+                .position(new LatLng(lati, longi))
                 .flat(true));
+        new Handler().postDelayed(new Runnable() {
 
+            @Override
+            public void run() {
+                Toast.makeText(getActivity(), "Have you the right floor in AdsumMap?", Toast.LENGTH_LONG).show();
+            }
+        }, 3500);
     }
 
     @Override
@@ -146,6 +154,7 @@ public class GoogleMapAndMapFragment extends MainActivity.PlaceholderFragment im
                 .flat(true));
         map.setCurrentPosition(latLng.latitude, latLng.longitude, map.getCurrentFloor());
         map.centerOnPlace(0);
+
     }
 
     //end google map callbacks
@@ -229,7 +238,7 @@ public class GoogleMapAndMapFragment extends MainActivity.PlaceholderFragment im
 
     }
 
-    private double longi =2.349315;
+    private double longi = 2.349315;
     private double lati = 48.853261;
 
     private void getCoordinates() {
