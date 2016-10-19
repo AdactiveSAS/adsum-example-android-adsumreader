@@ -79,6 +79,8 @@ public class GoogleMapAndMapFragment extends MainActivity.PlaceholderFragment im
         mapContainerSmall = (RelativeLayout) rootView.findViewById(R.id.map_container_small);
         currentCameraMode = MapView.CameraMode.ORTHO;
         mapContainerSmall.addView(map);
+        int[] aa=map.getAllBuildings();
+        map.setCurrentBuilding(aa[0]);
 
         setLevelSmall = (FloatingActionsMenu) rootView.findViewById(R.id.set_levelsmall);
 
