@@ -23,83 +23,71 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="273dp">
+                android:layout_height="0dp"
+                android:layout_weight="2">
 
                 <RelativeLayout
-                    android:id="@+id/map_container_small"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:orientation="vertical" />
+                    android:layout_height="match_parent">
 
-                <com.getbase.floatingactionbutton.FloatingActionsMenu
-                    android:id="@+id/set_levelsmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginRight="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:background="@color/transparent"
-                    android:visibility="visible"
-                    fab:fab_menuButtonColorNormal="@color/white"
-                    fab:fab_menuButtonColorPressed="@color/white_pressed"
-                    fab:fab_menuButtonIcon="@drawable/ic_swap_vert_black_48dp"
-                    fab:fab_expandDirection="left"
-                    fab:fab_menuButtonSize="mini">
-                </com.getbase.floatingactionbutton.FloatingActionsMenu>
+                    <RelativeLayout
+                        android:id="@+id/map_container_small"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:orientation="vertical" />
 
+                    <com.getbase.floatingactionbutton.FloatingActionsMenu
+                        android:id="@+id/set_levelsmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginTop="8dp"
+                        android:background="@color/transparent"
+                        android:visibility="visible"
+                        fab:fab_expandDirection="left"
+                        fab:fab_menuButtonColorNormal="@color/white"
+                        fab:fab_menuButtonColorPressed="@color/white_pressed"
+                        fab:fab_menuButtonIcon="@drawable/ic_swap_vert_black_48dp"
+                        fab:fab_menuButtonSize="mini" />
+                </RelativeLayout>
 
-            </RelativeLayout>
+            </LinearLayout>
 
-            <RelativeLayout
-                android:id="@+id/progress_container_small"
-                android:layout_width="match_parent"
-                android:layout_height="273dp"
-                android:visibility="gone">
-
-                <ProgressBar
-                    android:id="@+id/progress_bar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/progress_bar"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
-                    android:text="@string/loading_map" />
-            </RelativeLayout>
-
-            <TextView
-                android:text="Latitude Longitude"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/gmapTV"
-                android:gravity="center" />
+               >
 
-            <RelativeLayout
+                <TextView
+                    android:id="@+id/gmapTV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Latitude Longitude" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/fragment_container"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="0dp"
+                android:layout_weight="2">
 
                 <com.google.android.gms.maps.MapView
                     android:id="@+id/gmap_container"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:clickable="true"
                     android:apiKey="AIzaSyB6jASwCbR1X02Z60y8NrvhWhb8EBEm57w"
-                    />
+                    android:clickable="true" />
 
-            </RelativeLayout>
+            </LinearLayout>
 
 
         </LinearLayout>

@@ -295,10 +295,14 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        if (intent.getStringExtra("methodName").equals("myMethod")) {
-            launchDoubleMap();
+        if (intent != null) {
+            String s= intent.getStringExtra("methodName");
+            if (s!=null) {
+                if (s.equals("myMethod")){
+                    launchDoubleMap();
+                }
+            }
         }
     }
-
 
 }

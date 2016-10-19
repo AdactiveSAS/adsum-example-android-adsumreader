@@ -34,7 +34,7 @@ import java.util.Map;
  * Created by Ambroise on 14/10/2016.
  */
 
-public class GoogleMapAndMapFragment extends MainActivity.PlaceholderFragment implements OnMapReadyCallback, GoogleMap.OnMapClickListener, GoogleMap.OnMapLongClickListener {
+public class GoogleMapAndMapFragment extends MainActivity.PlaceholderFragment implements OnMapReadyCallback, GoogleMap.OnMapClickListener {
     private MapView map;
     private AdActiveEventListener adActiveEventListener;
     private View rootView;
@@ -76,20 +76,14 @@ public class GoogleMapAndMapFragment extends MainActivity.PlaceholderFragment im
         //loading of the map
         mapContainerSmall = (RelativeLayout) rootView.findViewById(R.id.map_container_small);
         currentCameraMode = MapView.CameraMode.ORTHO;
-
-        if (!map.isMapDataAvailable()) {
-            rootView.findViewById(R.id.map_small).setVisibility(View.GONE);
-            rootView.findViewById(R.id.progress_container_small).setVisibility(View.VISIBLE);
-        }
-
         mapContainerSmall.addView(map);
 
         setLevelSmall = (FloatingActionsMenu) rootView.findViewById(R.id.set_levelsmall);
 
-
+        //Explainatory Dialog
         Bundle args = new Bundle();
         args.putString(StoreDescriptionDialog.ARG_STORE_NAME, "Notice");
-        args.putString(StoreDescriptionDialog.ARG_STORE_DESCRIPTION, "Click long on GoogleMap to center AdsumMap on Position clicked. If AdsumMap doesn't contain positions, Google Map will go to Notre Dame of Paris");
+        args.putString(StoreDescriptionDialog.ARG_STORE_DESCRIPTION, "Click on GoogleMap to center AdsumMap on Position clicked. If AdsumMap doesn't contain positions, Google Map will go to Notre Dame of Paris");
         StoreDescriptionDialog storeDialog = new StoreDescriptionDialog();
         storeDialog.setArguments(args);
         storeDialog.show(getFragmentManager(), "storeDescription");
@@ -104,13 +98,12 @@ public class GoogleMapAndMapFragment extends MainActivity.PlaceholderFragment im
     @Override
     public void onMapReady(GoogleMap googleMap) {
         googleMap.setOnMapClickListener(this);
-        googleMap.setOnMapLongClickListener(this);
 
         getCoordinates();
         mTapTextView = (TextView) getActivity().findViewById(R.id.gmapTV);
         mTapTextView.setText("Lat=" + lati + " Long=" + longi);
         map.setCurrentPosition(lati, longi, map.getCurrentFloor());
-        CameraPosition cameraPosition = new CameraPosition.Builder().target(new LatLng(lati, longi)).zoom(17).build();
+        CameraPosition cameraPosition = new CameraPosition.Builder().target(new LatLng(lati, longi)).zoom(18 ).build();
         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         googleMap.addMarker(new MarkerOptions()
                 .position(new LatLng(lati,longi))
@@ -143,7 +136,7 @@ public class GoogleMapAndMapFragment extends MainActivity.PlaceholderFragment im
     }
 
     @Override
-    public void onMapLongClick(LatLng latLng) {
+    public void onMapClick(LatLng latLng) {
         GoogleMap googleMap = mapView.getMap();
         mTapTextView = (TextView) getActivity().findViewById(R.id.gmapTV);
         mTapTextView.setText("Lat=" + latLng.latitude + " Long=" + latLng.longitude);
@@ -153,13 +146,6 @@ public class GoogleMapAndMapFragment extends MainActivity.PlaceholderFragment im
                 .flat(true));
         map.setCurrentPosition(latLng.latitude, latLng.longitude, map.getCurrentFloor());
         map.centerOnPlace(0);
-    }
-
-    @Override
-    public void onMapClick(LatLng point) {
-        mTapTextView = (TextView) getActivity().findViewById(R.id.gmapTV);
-        Log.e("taped", String.valueOf(point));
-        mTapTextView.setText("Lat=" + point.latitude + " Long=" + point.longitude);
     }
 
     //end google map callbacks
