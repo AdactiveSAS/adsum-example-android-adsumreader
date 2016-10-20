@@ -1,53 +1,53 @@
 <!-- A DrawerLayout is intended to be used as the top-level content view using match_parent for both width and height to consume the full space available. -->
-<com.charbgr.BlurNavigationDrawer.v7.BlurDrawerLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<com.charbgr.BlurNavigationDrawer.v7.BlurDrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:blurRadius="10"
-    app:downScaleFactor="1.0"
-    app:openDescription="@string/navigation_drawer_open"
     app:closeDescription="@string/navigation_drawer_close"
+    app:downScaleFactor="1.0"
     app:drawerUpImageId="@drawable/ic_drawer"
+    app:openDescription="@string/navigation_drawer_open"
     tools:context=".MainActivity">
 
 
-        <LinearLayout
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.Toolbar xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/background_material_dark"
+            android:minHeight="?attr/actionBarSize"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+        <FrameLayout
+            android:id="@+id/container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:background="#FFFFFF"/>
 
-            <android.support.v7.widget.Toolbar
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/toolbar"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:minHeight="?attr/actionBarSize"
-                android:background="@color/background_material_dark"
-                app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+    </LinearLayout>
 
-            <FrameLayout android:id="@+id/container"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#FFFFFF">
-            </FrameLayout>
+    <com.quinny898.library.persistentsearch.SearchBox
+        android:id="@+id/searchbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
 
 
-        </LinearLayout>
-
-        <com.quinny898.library.persistentsearch.SearchBox
-            android:id="@+id/searchbox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"/>
-
-
-    <fragment android:id="@+id/navigation_drawer"
-        android:layout_width="@dimen/navigation_drawer_width" android:layout_height="match_parent"
-        android:layout_gravity="start" android:name="com.adactive.AdsumReader.NavigationDrawerFragment"
+    <fragment
+        android:id="@+id/navigation_drawer"
+        android:name="com.adactive.AdsumReader.Ui.NavigationDrawerFragment"
+        android:layout_width="@dimen/navigation_drawer_width"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
         tools:layout="@layout/fragment_navigation_drawer" />
 
 </com.charbgr.BlurNavigationDrawer.v7.BlurDrawerLayout>
