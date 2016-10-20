@@ -1,4 +1,4 @@
-package com.adactive.AdsumReader;
+package com.adactive.AdsumReader.Ui;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,15 +14,18 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.adactive.AdsumReader.Dialogs.WayfindingDialog;
+import com.adactive.AdsumReader.MainActivity;
+import com.adactive.AdsumReader.R;
 import com.adactive.AdsumReader.Structure.PoiCollection;
 import com.adactive.nativeapi.AdActiveEventListener;
 import com.adactive.nativeapi.CheckForUpdatesNotice;
 import com.adactive.nativeapi.CheckStartNotice;
 import com.adactive.nativeapi.Coordinates3D;
-import com.adactive.nativeapi.DataObject.Poi;
 import com.adactive.nativeapi.MapView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.getbase.floatingactionbutton.FloatingActionButton;
@@ -35,7 +38,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-//import com.adactive.nativeapi.DataObject.Store;
+
 
 public class MapBaseFragment extends MainActivity.PlaceholderFragment {
     private PoiCollection mPoiCollection;
@@ -64,9 +67,6 @@ public class MapBaseFragment extends MainActivity.PlaceholderFragment {
 
     private SearchBox search;
     private boolean isMenuEnabled = true;
-
-    private ArrayList<String> storesNamesList = new ArrayList<>();
-    private ArrayList<Integer> storesIdsList = new ArrayList<>();
 
     private AdActiveEventListener adActiveEventListener;
 
@@ -100,14 +100,12 @@ public class MapBaseFragment extends MainActivity.PlaceholderFragment {
                 }
             }
 
-
             @Override
             public void OnFloorClickedHandler(int i) {
             }
 
             @Override
             public void OnTextClickedHandler(int[] POIs, int place) {
-                //doTextClicked(POIs[0]);
             }
 
             @Override
@@ -159,14 +157,13 @@ public class MapBaseFragment extends MainActivity.PlaceholderFragment {
         startActivity(intent);
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup acontainer, Bundle savedInstanceState) {
         this.container = acontainer;
 
         rootView = inflater.inflate(R.layout.fragment_map, container, false);
 
-
-        //TODO Comment when ORTHO will be fix
         currentCameraMode = MapView.CameraMode.FULL;
 
         mapContainer = (LinearLayout) rootView.findViewById(R.id.map_container);
@@ -253,15 +250,6 @@ public class MapBaseFragment extends MainActivity.PlaceholderFragment {
     }
 
     @Override
-    public void onResume() {
-
-        if (map != null)
-            map.onResume();
-        super.onResume();
-
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
@@ -301,14 +289,13 @@ public class MapBaseFragment extends MainActivity.PlaceholderFragment {
         map.removeEventListener(adActiveEventListener);
 
         locationManager.removeUpdates(this.locationListener);
+
         //Close the keyboard
-        /*
         View view = getActivity().getCurrentFocus();
         if (view != null) {
             InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
-        */
 
         if (!isMenuEnabled) {
             search.toggleSearch();
@@ -327,6 +314,7 @@ public class MapBaseFragment extends MainActivity.PlaceholderFragment {
 
     private void doMapLoaded() {
         mPoiCollection = new PoiCollection(map.getDataManager().getAllPois());
+
 
         //initializeArrays(map.getALLStore());
         final boolean isInBuilding = map.getCurrentBuilding() != -1;
@@ -395,20 +383,6 @@ public class MapBaseFragment extends MainActivity.PlaceholderFragment {
         map.unLightAll();
         map.highLightPlace(placeId, getString(R.string.highlight_color));
         map.centerOnPlace(placeId);
-    }
-
-    private void doTextClicked(int POI) {
-        Bundle args = new Bundle();
-
-        // String description = storesIdsMap.get(POI).getDescription() != null ? storesIdsMap.get(POI).getDescription() : getString(R.string.no_description);
-
-        //  args.putString(StoreDescriptionDialog.ARG_STORE_NAME, storesIdsMap.get(POI).getName());
-        // args.putString(StoreDescriptionDialog.ARG_STORE_DESCRIPTION, description);
-
-        StoreDescriptionDialog storeDialog = new StoreDescriptionDialog();
-        storeDialog.setArguments(args);
-
-        storeDialog.show(getFragmentManager(), "storeDescription");
     }
 
     private void doBuildingClicked(int i) {
@@ -559,7 +533,6 @@ public class MapBaseFragment extends MainActivity.PlaceholderFragment {
             }
         });
 
-
     }
 
     private void doCloseSearch() {
@@ -584,6 +557,4 @@ public class MapBaseFragment extends MainActivity.PlaceholderFragment {
         }
 
     }
-
-
 }

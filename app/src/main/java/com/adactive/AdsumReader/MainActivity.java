@@ -1,12 +1,12 @@
 package com.adactive.AdsumReader;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -14,8 +14,15 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.Xml;
 import android.view.Menu;
+import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import com.adactive.AdsumReader.Ui.DescriptionFragment;
+import com.adactive.AdsumReader.Ui.GoogleMapAndMapFragment;
+import com.adactive.AdsumReader.Ui.MapBaseFragment;
+import com.adactive.AdsumReader.Ui.NavigationDrawerFragment;
 import com.adactive.nativeapi.MapView;
 import com.google.android.gms.maps.MapFragment;
 import com.crashlytics.android.Crashlytics;
@@ -24,6 +31,7 @@ import com.google.zxing.integration.android.IntentResult;
 import com.quinny898.library.persistentsearch.SearchBox;
 
 import io.fabric.sdk.android.Fabric;
+
 import org.xmlpull.v1.XmlPullParser;
 
 import java.io.File;
@@ -39,7 +47,6 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     private CharSequence mTitle;
     private MapView map;
     private Toolbar toolbar;
-    private MapFragment mMapFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,8 +63,13 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
         setContentView(R.layout.activity_main);
 
+        InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        //Hide:
+        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+
+
         map = new MapView(getApplicationContext());
-        map.update();
+        map.update(true);
 
         if (map.isMapDataAvailable()) {
             map.start();
@@ -270,21 +282,6 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
             ((MainActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
         }
 
-        @Override
-        public void onDetach() {
-            super.onDetach();
-            try {
-                Field childFragmentManager = Fragment.class.getDeclaredField("mChildFragmentManager");
-                childFragmentManager.setAccessible(true);
-                childFragmentManager.set(this, null);
-
-            } catch (NoSuchFieldException e) {
-                throw new RuntimeException(e);
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
     }
 
     public void launchDoubleMap() {
@@ -299,9 +296,9 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         if (intent != null) {
-            String s= intent.getStringExtra("methodName");
-            if (s!=null) {
-                if (s.equals("myMethod")){
+            String s = intent.getStringExtra("methodName");
+            if (s != null) {
+                if (s.equals("myMethod")) {
                     launchDoubleMap();
                 }
             }

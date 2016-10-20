@@ -1,4 +1,4 @@
-package com.adactive.AdsumReader;
+package com.adactive.AdsumReader.Dialogs;
 
 
 import android.app.Dialog;
@@ -6,6 +6,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
+
+import com.adactive.AdsumReader.R;
 
 public class StoreDescriptionDialog extends DialogFragment {
     public static final String ARG_STORE_NAME = "store_name";

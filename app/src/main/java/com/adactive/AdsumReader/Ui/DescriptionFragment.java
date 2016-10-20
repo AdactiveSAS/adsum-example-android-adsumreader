@@ -1,14 +1,20 @@
-package com.adactive.AdsumReader;
+package com.adactive.AdsumReader.Ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ScrollView;
 
+import com.adactive.AdsumReader.CaptureActivityAnyOrientation;
+import com.adactive.AdsumReader.MainActivity;
+import com.adactive.AdsumReader.R;
 import com.google.zxing.integration.android.IntentIntegrator;
 
 
@@ -36,7 +42,7 @@ public class DescriptionFragment extends MainActivity.PlaceholderFragment {
         scanQr.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            startScanning();
+                startScanning();
             }
         });
 
@@ -45,11 +51,11 @@ public class DescriptionFragment extends MainActivity.PlaceholderFragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        ((MainActivity)getActivity()).handleQRCode(requestCode,resultCode,data);
+        ((MainActivity) getActivity()).handleQRCode(requestCode, resultCode, data);
     }
-    private void startScanning()
-    {
-        IntentIntegrator integrator =  IntentIntegrator.forSupportFragment(this);
+
+    private void startScanning() {
+        IntentIntegrator integrator = IntentIntegrator.forSupportFragment(this);
         integrator.setCaptureActivity(CaptureActivityAnyOrientation.class);
         integrator.initiateScan();
     }

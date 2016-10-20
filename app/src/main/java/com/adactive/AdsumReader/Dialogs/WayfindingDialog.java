@@ -1,4 +1,4 @@
-package com.adactive.AdsumReader;
+package com.adactive.AdsumReader.Dialogs;
 
 
 import android.app.Dialog;
@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 
+import com.adactive.AdsumReader.R;
 import com.adactive.nativeapi.MapView;
 import com.getbase.floatingactionbutton.FloatingActionButton;
 

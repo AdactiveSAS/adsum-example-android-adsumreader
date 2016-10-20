@@ -1,4 +1,4 @@
-package com.adactive.AdsumReader;
+package com.adactive.AdsumReader.Ui;
 
 import android.database.Cursor;
 import android.database.SQLException;
@@ -14,8 +14,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.adactive.nativeapi.AdActiveEventListener;
-
+import com.adactive.AdsumReader.Dialogs.StoreDescriptionDialog;
+import com.adactive.AdsumReader.MainActivity;
+import com.adactive.AdsumReader.R;
 import com.adactive.nativeapi.MapView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.getbase.floatingactionbutton.FloatingActionButton;
@@ -37,15 +38,20 @@ import java.util.Map;
  */
 
 public class GoogleMapAndMapFragment extends MainActivity.PlaceholderFragment implements OnMapReadyCallback, GoogleMap.OnMapClickListener {
+
     private MapView map;
-    private AdActiveEventListener adActiveEventListener;
-    private View rootView;
     private MapView.CameraMode currentCameraMode;
 
     private RelativeLayout mapContainerSmall;
     private TextView mTapTextView;
+    private View rootView;
 
     private com.google.android.gms.maps.MapView mapView;
+
+    //default coordinates points to notre dame of paris
+    private double longi = 2.349315;
+    private double lati = 48.853261;
+
     private Map<Integer, FloatingActionButton> floorButtonsMap = new HashMap<>();
     private FloatingActionButton preSelectedFloorButton;
     private FloatingActionsMenu setLevelSmall;
@@ -55,7 +61,6 @@ public class GoogleMapAndMapFragment extends MainActivity.PlaceholderFragment im
         fragment.setMap(map);
         return fragment;
     }
-
     private void setMap(MapView m) {
         map = m;
     }
@@ -71,17 +76,15 @@ public class GoogleMapAndMapFragment extends MainActivity.PlaceholderFragment im
         try {
             MapsInitializer.initialize(getActivity().getApplicationContext());
         } catch (Exception e) {
-            e.printStackTrace();
-        }
+            e.printStackTrace();        }
         mapView.getMapAsync(this);
 
         //loading of the map
         mapContainerSmall = (RelativeLayout) rootView.findViewById(R.id.map_container_small);
         currentCameraMode = MapView.CameraMode.ORTHO;
         mapContainerSmall.addView(map);
-        int[] aa=map.getAllBuildings();
+        int[] aa = map.getAllBuildings();
         map.setCurrentBuilding(aa[0]);
-
         setLevelSmall = (FloatingActionsMenu) rootView.findViewById(R.id.set_levelsmall);
 
         //Explainatory Dialog
@@ -116,7 +119,8 @@ public class GoogleMapAndMapFragment extends MainActivity.PlaceholderFragment im
 
             @Override
             public void run() {
-                Toast.makeText(getActivity(), "Have you the right floor in AdsumMap?", Toast.LENGTH_LONG).show();
+                if ((getActivity()!=null))
+                Toast.makeText(getActivity(), "Do you have the right floor in AdsumMap?", Toast.LENGTH_LONG).show();
             }
         }, 3500);
     }
@@ -160,6 +164,8 @@ public class GoogleMapAndMapFragment extends MainActivity.PlaceholderFragment im
     }
 
     //end google map callbacks
+
+    //Floor buttons management
 
     private void doBuildingClicked(int i) {
         final int[] floors = map.getBuildingFloors(i);
@@ -218,6 +224,7 @@ public class GoogleMapAndMapFragment extends MainActivity.PlaceholderFragment im
             public void onClick(View v) {
                 doFloorChanged(floorId);
                 map.setCurrentFloor(floorId);
+
             }
         });
 
@@ -239,17 +246,15 @@ public class GoogleMapAndMapFragment extends MainActivity.PlaceholderFragment im
         });
 
     }
+    // end floor button management
 
-    private double longi = 2.349315;
-    private double lati = 48.853261;
 
+    //get some embedded coordinates in the database
     private void getCoordinates() {
-        String path = "/data/data/com.adactive.mall/files/content.db";
+        String path = "/data/data/com.adactive.adsumreader/files/content.db";
         File database = new File(path);
-        Log.e("data", String.valueOf(database.exists()));
 
         try {
-
             SQLiteDatabase db = SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.OPEN_READONLY);
             Cursor cursor = db.query(("geolocalisation"), new String[]{"longitude", "latitude"}, null, null, null, null, null);
             if (cursor.moveToFirst()) {

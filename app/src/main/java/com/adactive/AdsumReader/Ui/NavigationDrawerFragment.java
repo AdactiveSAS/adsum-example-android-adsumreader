@@ -1,4 +1,4 @@
-package com.adactive.AdsumReader;
+package com.adactive.AdsumReader.Ui;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
@@ -21,6 +21,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.adactive.AdsumReader.R;
 import com.charbgr.BlurNavigationDrawer.v7.BlurActionBarDrawerToggle;
 
 
