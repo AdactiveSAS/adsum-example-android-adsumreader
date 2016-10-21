@@ -29,7 +29,7 @@
             </intent-filter>
 
         </activity>
-        <activity android:name="com.adactive.AdsumReader.CaptureActivityAnyOrientation"
+        <activity android:name="com.adactive.AdsumReader.Interface.CaptureActivityAnyOrientation"
             android:screenOrientation="fullSensor"
             android:stateNotNeeded="true"
             android:theme="@style/zxing_CaptureTheme"

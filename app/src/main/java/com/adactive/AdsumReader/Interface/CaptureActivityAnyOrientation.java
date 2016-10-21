@@ -1,4 +1,4 @@
-package com.adactive.AdsumReader;
+package com.adactive.AdsumReader.Interface;
 
 import com.journeyapps.barcodescanner.CaptureActivity;
 

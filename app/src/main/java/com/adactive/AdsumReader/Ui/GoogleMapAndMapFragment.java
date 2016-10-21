@@ -258,7 +258,7 @@ public class GoogleMapAndMapFragment extends MainActivity.PlaceholderFragment im
             SQLiteDatabase db = SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.OPEN_READONLY);
             Cursor cursor = db.query(("geolocalisation"), new String[]{"longitude", "latitude"}, null, null, null, null, null);
             if (cursor.moveToFirst()) {
-                cursor.moveToNext();
+                //cursor.moveToNext();
                 longi = cursor.getDouble(cursor.getColumnIndex("longitude"));
                 lati = cursor.getDouble(cursor.getColumnIndex("latitude"));
             }
@@ -266,7 +266,6 @@ public class GoogleMapAndMapFragment extends MainActivity.PlaceholderFragment im
         } catch (SQLException sqlexception) {
             Log.e("Sql esception", String.valueOf(sqlexception));
         }
-
 
     }
 
