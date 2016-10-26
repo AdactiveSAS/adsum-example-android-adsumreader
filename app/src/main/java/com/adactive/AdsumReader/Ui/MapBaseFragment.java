@@ -18,6 +18,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.adactive.AdsumReader.Dialogs.StoreDescriptionDialog;
 import com.adactive.AdsumReader.Dialogs.WayfindingDialog;
 import com.adactive.AdsumReader.MainActivity;
 import com.adactive.AdsumReader.R;
@@ -26,6 +27,7 @@ import com.adactive.nativeapi.AdActiveEventListener;
 import com.adactive.nativeapi.CheckForUpdatesNotice;
 import com.adactive.nativeapi.CheckStartNotice;
 import com.adactive.nativeapi.Coordinates3D;
+import com.adactive.nativeapi.MapObject.Logo;
 import com.adactive.nativeapi.MapView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.getbase.floatingactionbutton.FloatingActionButton;
@@ -66,7 +68,7 @@ public class MapBaseFragment extends MainActivity.PlaceholderFragment {
     private Map<Integer, FloatingActionButton> floorButtonsMap = new HashMap<>();
 
     private SearchBox search;
-    private boolean isMenuEnabled = true;
+    private boolean isMenuEnabled = false;
 
     private AdActiveEventListener adActiveEventListener;
 
@@ -241,6 +243,11 @@ public class MapBaseFragment extends MainActivity.PlaceholderFragment {
     }
 
     @Override
+    public void onResume(){
+        super.onResume();
+    }
+
+    @Override
     public void onPause() {
         if (map != null)
             map.onPause();
@@ -275,6 +282,15 @@ public class MapBaseFragment extends MainActivity.PlaceholderFragment {
             if (id == R.id.precision_GPS) {
                 showGmap();
                 return true;
+            }
+            if(id==R.id.sdkVersion){
+                StoreDescriptionDialog storeDescriptionDialog=new StoreDescriptionDialog();
+                Bundle args = new Bundle();
+                args.putString(StoreDescriptionDialog.ARG_STORE_NAME, "Sdk Version");
+                args.putString(StoreDescriptionDialog.ARG_STORE_DESCRIPTION, map.getVersion());
+                storeDescriptionDialog.setArguments(args);
+                storeDescriptionDialog.show(getFragmentManager(), "storeDescription");
+
             }
         }
 
@@ -312,7 +328,9 @@ public class MapBaseFragment extends MainActivity.PlaceholderFragment {
     }
 
 
+
     private void doMapLoaded() {
+
         mPoiCollection = new PoiCollection(map.getDataManager().getAllPois());
 
 
@@ -320,7 +338,7 @@ public class MapBaseFragment extends MainActivity.PlaceholderFragment {
         final boolean isInBuilding = map.getCurrentBuilding() != -1;
 
         // Configure the map
-        map.customizeInactivePlaces(getString(R.string.inactive_color));
+        //map.customizeInactivePlaces(getString(R.string.inactive_color));
         map.limitCameraMovement(true);
         map.setSiteVisible(false);
         map.setCameraMode(currentCameraMode);
@@ -362,6 +380,7 @@ public class MapBaseFragment extends MainActivity.PlaceholderFragment {
         }
 
         isMapLoaded = true;
+        isMenuEnabled=true;
 
     }
 
