@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
@@ -40,7 +41,7 @@ import java.util.Map;
 public class GoogleMapAndMapFragment extends MainActivity.PlaceholderFragment implements OnMapReadyCallback, GoogleMap.OnMapClickListener {
 
     private MapView map;
-    private MapView.CameraMode currentCameraMode;
+    private MapView.CameraMode currentCameraMode= MapView.CameraMode.ORTHO;
 
     private RelativeLayout mapContainerSmall;
     private TextView mTapTextView;
@@ -55,6 +56,7 @@ public class GoogleMapAndMapFragment extends MainActivity.PlaceholderFragment im
     private Map<Integer, FloatingActionButton> floorButtonsMap = new HashMap<>();
     private FloatingActionButton preSelectedFloorButton;
     private FloatingActionsMenu setLevelSmall;
+    private FloatingActionButton set2d3d;
 
     public static GoogleMapAndMapFragment newInstance(MapView map) {
         GoogleMapAndMapFragment fragment = new GoogleMapAndMapFragment();
@@ -86,6 +88,28 @@ public class GoogleMapAndMapFragment extends MainActivity.PlaceholderFragment im
         int[] aa = map.getAllBuildings();
         map.setCurrentBuilding(aa[0]);
         setLevelSmall = (FloatingActionsMenu) rootView.findViewById(R.id.set_levelsmall);
+        set2d3d= (FloatingActionButton) rootView.findViewById(R.id.switch2d3d);
+        set2d3d.setIcon(R.drawable.k32d);
+
+        set2d3d.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (currentCameraMode == MapView.CameraMode.FULL) {
+                    currentCameraMode = MapView.CameraMode.ORTHO;
+                    set2d3d.setIcon(R.drawable.k2d);
+
+                } else if (currentCameraMode == MapView.CameraMode.ORTHO) {
+                    currentCameraMode = MapView.CameraMode.FULL;
+                    set2d3d.setIcon(R.drawable.k3d);
+                }
+
+                map.setCameraMode(currentCameraMode);
+            }
+
+
+
+        });
 
         //Explainatory Dialog
         Bundle args = new Bundle();

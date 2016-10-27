@@ -13,7 +13,6 @@
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/progress_container"
         android:alwaysDrawnWithCache="true"
         android:orientation="vertical">
 
@@ -36,9 +35,25 @@
                         android:id="@+id/map_container_small"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:orientation="vertical" />
+
+
+                    <com.getbase.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/switch2d3d"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
                         android:layout_alignParentStart="true"
-                        android:orientation="vertical" />
+                        android:layout_alignParentTop="true"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:background="@color/transparent"
+                        android:visibility="visible"
+                        fab:fab_colorNormal="@color/white"
+                        fab:fab_colorPressed="@color/white_pressed"
+                        fab:fab_size="mini" />
+
 
                     <com.getbase.floatingactionbutton.FloatingActionsMenu
                         android:id="@+id/set_levelsmall"
@@ -57,6 +72,7 @@
                         fab:fab_menuButtonColorPressed="@color/white_pressed"
                         fab:fab_menuButtonIcon="@drawable/ic_swap_vert_black_48dp"
                         fab:fab_menuButtonSize="mini" />
+
                 </RelativeLayout>
 
             </LinearLayout>
