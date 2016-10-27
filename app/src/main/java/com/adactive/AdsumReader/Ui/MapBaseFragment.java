@@ -242,19 +242,6 @@ public class MapBaseFragment extends MainActivity.PlaceholderFragment {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    @Override
-    public void onResume(){
-        super.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        if (map != null)
-            map.onPause();
-        super.onPause();
-
-
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -574,6 +561,23 @@ public class MapBaseFragment extends MainActivity.PlaceholderFragment {
             map.centerOnPOI(poiID, 600, 0.9f);
             map.drawPathToPoi(poiID);
         }
+
+    }
+    @Override
+    public void onPause() {
+        if (map != null)
+            map.onPause();
+        super.onPause();
+
+
+    }
+
+    @Override
+    public void onResume() {
+
+        if (map != null)
+            map.onResume();
+        super.onResume();
 
     }
 }
