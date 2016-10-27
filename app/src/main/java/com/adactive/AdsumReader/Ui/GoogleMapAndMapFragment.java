@@ -41,7 +41,7 @@ import java.util.Map;
 public class GoogleMapAndMapFragment extends MainActivity.PlaceholderFragment implements OnMapReadyCallback, GoogleMap.OnMapClickListener {
 
     private MapView map;
-    private MapView.CameraMode currentCameraMode= MapView.CameraMode.ORTHO;
+    private MapView.CameraMode currentCameraMode = MapView.CameraMode.ORTHO;
 
     private RelativeLayout mapContainerSmall;
     private TextView mTapTextView;
@@ -63,6 +63,7 @@ public class GoogleMapAndMapFragment extends MainActivity.PlaceholderFragment im
         fragment.setMap(map);
         return fragment;
     }
+
     private void setMap(MapView m) {
         map = m;
     }
@@ -78,7 +79,8 @@ public class GoogleMapAndMapFragment extends MainActivity.PlaceholderFragment im
         try {
             MapsInitializer.initialize(getActivity().getApplicationContext());
         } catch (Exception e) {
-            e.printStackTrace();        }
+            e.printStackTrace();
+        }
         mapView.getMapAsync(this);
 
         //loading of the map
@@ -88,7 +90,7 @@ public class GoogleMapAndMapFragment extends MainActivity.PlaceholderFragment im
         int[] aa = map.getAllBuildings();
         map.setCurrentBuilding(aa[0]);
         setLevelSmall = (FloatingActionsMenu) rootView.findViewById(R.id.set_levelsmall);
-        set2d3d= (FloatingActionButton) rootView.findViewById(R.id.switch2d3d);
+        set2d3d = (FloatingActionButton) rootView.findViewById(R.id.switch2d3d);
         set2d3d.setIcon(R.drawable.k32d);
 
         set2d3d.setOnClickListener(new View.OnClickListener() {
@@ -106,7 +108,6 @@ public class GoogleMapAndMapFragment extends MainActivity.PlaceholderFragment im
 
                 map.setCameraMode(currentCameraMode);
             }
-
 
 
         });
@@ -143,20 +144,25 @@ public class GoogleMapAndMapFragment extends MainActivity.PlaceholderFragment im
 
             @Override
             public void run() {
-                if ((getActivity()!=null))
-                Toast.makeText(getActivity(), "Do you have the right floor in AdsumMap?", Toast.LENGTH_LONG).show();
+                if ((getActivity() != null))
+                    Toast.makeText(getActivity(), "Do you have the right floor in AdsumMap?", Toast.LENGTH_LONG).show();
             }
         }, 3500);
     }
 
     @Override
     public void onResume() {
+        if (map != null)
+            map.onResume();
         super.onResume();
         mapView.onResume();
     }
 
+
     @Override
     public void onPause() {
+        if (map != null)
+            map.onPause();
         super.onPause();
         mapView.onPause();
     }
@@ -187,9 +193,9 @@ public class GoogleMapAndMapFragment extends MainActivity.PlaceholderFragment im
 
     }
 
-    //end google map callbacks
+//end google map callbacks
 
-    //Floor buttons management
+//Floor buttons management
 
     private void doBuildingClicked(int i) {
         final int[] floors = map.getBuildingFloors(i);
@@ -270,7 +276,7 @@ public class GoogleMapAndMapFragment extends MainActivity.PlaceholderFragment im
         });
 
     }
-    // end floor button management
+// end floor button management
 
 
     //get some embedded coordinates in the database
@@ -292,5 +298,6 @@ public class GoogleMapAndMapFragment extends MainActivity.PlaceholderFragment im
         }
 
     }
+
 
 }
