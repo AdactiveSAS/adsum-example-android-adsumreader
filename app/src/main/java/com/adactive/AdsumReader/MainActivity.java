@@ -1,7 +1,6 @@
 package com.adactive.AdsumReader;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -14,8 +13,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.Xml;
 import android.view.Menu;
-import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
@@ -24,13 +21,9 @@ import com.adactive.AdsumReader.Ui.GoogleMapAndMapFragment;
 import com.adactive.AdsumReader.Ui.MapBaseFragment;
 import com.adactive.AdsumReader.Ui.NavigationDrawerFragment;
 import com.adactive.nativeapi.MapView;
-import com.google.android.gms.maps.MapFragment;
-import com.crashlytics.android.Crashlytics;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.quinny898.library.persistentsearch.SearchBox;
-
-import io.fabric.sdk.android.Fabric;
 
 import org.xmlpull.v1.XmlPullParser;
 
@@ -38,7 +31,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
-import java.lang.reflect.Field;
 import java.util.Locale;
 
 public class MainActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -51,7 +43,6 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fabric.with(this, new Crashlytics());
 
         //Force local to english
         Locale locale2 = new Locale("en");
