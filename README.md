@@ -19,9 +19,9 @@ You can find this qrCode in 'Profile -> Management -> qrCode'.
 
 ## Basic Info
 
-Target Android API Level: API 22
-Min Android API Level : API 14
-AdsumAndroidSDK v3.29.2
+- Target Android API Level: API 22
+- Min Android API Level : API 14
+- AdsumAndroidSDK v3.29.2
 
 ## Documentation
 
