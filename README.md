@@ -21,7 +21,7 @@ You can find this qrCode in 'Profile -> Management -> qrCode'.
 
 - Target Android API Level: API 22
 - Min Android API Level : API 14
-- AdsumAndroidSDK v3.29.2
+- AdsumAndroidSDK v3.32.4
 
 ## Documentation
 
@@ -39,3 +39,7 @@ Our Documentation is available at http://doc.adsum.io/index.php/adsum-android-sd
 </div>
 
 
+## Change Log
+
+* Using v3.32.4 -- *10/08/2018*
+* v3.32.4 now correctly supports HTTPS
