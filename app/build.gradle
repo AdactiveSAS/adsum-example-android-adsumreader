@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 22
-    buildToolsVersion "22.0.1"
+    buildToolsVersion '28.0.3'
 
     defaultConfig {
         applicationId "com.adactive.adsumreader"
@@ -39,15 +39,15 @@ repositories {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile project(':library')
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(':library')
 
-    compile 'com.android.support:appcompat-v7:22.2.0'
-    compile(name: 'AdsumAndroidAPI', ext: 'aar')
-    compile 'com.github.charbgr:BlurNavigationDrawer:18aa52fe63'
-    compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
-    compile 'com.quinny898.library.persistentsearch:library:1.0.0-SNAPSHOT'
-    compile 'com.journeyapps:zxing-android-embedded:3.0.2@aar'
-    compile 'com.google.zxing:core:3.2.0'
-    compile 'com.google.android.gms:play-services-maps:6.5.87'
+    implementation 'com.android.support:appcompat-v7:22.2.0'
+    implementation(name: 'AdsumAndroidAPI', ext: 'aar')
+    implementation 'com.github.charbgr:BlurNavigationDrawer:18aa52fe63'
+    implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
+    implementation 'com.quinny898.library.persistentsearch:library:1.0.0-SNAPSHOT'
+    implementation 'com.journeyapps:zxing-android-embedded:3.0.2@aar'
+    implementation 'com.google.zxing:core:3.2.0'
+    implementation 'com.google.android.gms:play-services-maps:6.5.87'
 }
